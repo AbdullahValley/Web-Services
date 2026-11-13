@@ -311,17 +311,36 @@
                 <div class="lg:col-span-2 space-y-6">
                     
                     <!-- Item 1: Website Maintenance -->
-                    <div class="bg-cardBg p-6 rounded-3xl border border-slate-800 hover:border-slate-700 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <div class="flex items-start gap-4">
-                            <input type="checkbox" id="srv-web" onchange="calculateTotal()" class="mt-1.5 w-5 h-5 accent-cyan-500 rounded cursor-pointer" checked>
-                            <div>
-                                <h4 class="font-heading font-bold text-lg text-white">1. Website Maintenance, Updates, Backup & Security</h4>
-                                <p class="text-slate-400 text-sm mt-1">Daily backups, troubleshooting, security checks, & performance monitoring.</p>
+                    <div class="bg-cardBg p-6 rounded-3xl border border-slate-800 hover:border-slate-700 transition-all">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+                            <div class="flex items-start gap-4">
+                                <input type="checkbox" id="srv-web" onchange="calculateTotal()" class="mt-1.5 w-5 h-5 accent-cyan-500 rounded cursor-pointer" checked>
+                                <div>
+                                    <h4 class="font-heading font-bold text-lg text-white">1. Website Maintenance, Updates, Backup & Security</h4>
+                                    <p class="text-slate-400 text-sm mt-1">Backups, troubleshooting, security checks, & performance monitoring.</p>
+                                </div>
+                            </div>
+                            <div class="text-right sm:text-right w-full sm:w-auto flex sm:flex-col justify-between items-center sm:items-end border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-800">
+                                <span class="text-xs text-slate-400 font-medium">Price</span>
+                                <span class="font-heading font-extrabold text-xl text-cyan-400 price-web">৳9,000</span>
                             </div>
                         </div>
-                        <div class="text-right sm:text-right w-full sm:w-auto flex sm:flex-col justify-between items-center sm:items-end border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-800">
-                            <span class="text-xs text-slate-400 font-medium">Price</span>
-                            <span class="font-heading font-extrabold text-xl text-cyan-400 price-web">৳9,000</span>
+                        <!-- Options for Website Maintenance -->
+                        <div class="pl-9 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t border-slate-800/80">
+                            <label class="flex items-center gap-3 p-3 rounded-xl bg-slate-900/60 border border-slate-800 cursor-pointer hover:border-cyan-500/50 transition-all">
+                                <input type="radio" name="opt-web" value="weekly" checked onchange="calculateTotal()" class="accent-cyan-500">
+                                <div class="text-sm">
+                                    <span class="font-semibold text-white block">Weekly Updates</span>
+                                    <span class="text-xs text-slate-400">Scheduled weekly backups & checks</span>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-3 p-3 rounded-xl bg-slate-900/60 border border-slate-800 cursor-pointer hover:border-cyan-500/50 transition-all">
+                                <input type="radio" name="opt-web" value="daily" onchange="calculateTotal()" class="accent-cyan-500">
+                                <div class="text-sm">
+                                    <span class="font-semibold text-white block">Daily Updates</span>
+                                    <span class="text-xs text-slate-400">Automated daily backups & monitoring</span>
+                                </div>
+                            </label>
                         </div>
                     </div>
 
@@ -845,7 +864,7 @@
 
             <!-- Bottom Copyright Bar -->
             <div class="pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
-                <p>© 2027 FUTURE VALLEY. All rights reserved.</p>
+                <p>© 2026 FUTURE VALLEY. All rights reserved.</p>
                 <p class="text-cyan-400/80 font-medium">Premium Web Services Provider</p>
             </div>
         </div>
@@ -871,7 +890,7 @@
         // Pricing Matrix Data (BDT and USD)
         const pricingData = {
             BDT: {
-                web: 9000,
+                web: { weekly: 9000, daily: 20000 },
                 fb: { weekly: 7000, daily: 15000 },
                 li: { weekly: 9000, daily: 20000 },
                 yt: { weekly: 12000, daily: 25000 },
@@ -879,7 +898,7 @@
                 format: (val) => '৳' + val.toLocaleString()
             },
             USD: {
-                web: 99,
+                web: { weekly: 99, daily: 299 },
                 fb: { weekly: 79, daily: 199 },
                 li: { weekly: 89, daily: 299 },
                 yt: { weekly: 149, daily: 399 },
@@ -955,27 +974,30 @@
             const p = pricingData[currentCurrency];
             const discountFactor = currentBilling === 'yearly' ? 0.95 : 1.0;
 
+            const webOptEl = document.querySelector('input[name="opt-web"]:checked');
             const fbOptEl = document.querySelector('input[name="opt-fb"]:checked');
             const liOptEl = document.querySelector('input[name="opt-li"]:checked');
             const ytOptEl = document.querySelector('input[name="opt-yt"]:checked');
 
+            const webOpt = webOptEl ? webOptEl.value : 'weekly';
             const fbOpt = fbOptEl ? fbOptEl.value : 'weekly';
             const liOpt = liOptEl ? liOptEl.value : 'weekly';
             const ytOpt = ytOptEl ? ytOptEl.value : 'weekly';
 
             // Calculate values (applying 5% discount if yearly billing is selected)
-            const webPrice = Math.round(p.web * discountFactor);
+            const webPrice = Math.round(p.web[webOpt] * discountFactor);
             const fbPrice = Math.round(p.fb[fbOpt] * discountFactor);
             const liPrice = Math.round(p.li[liOpt] * discountFactor);
             const ytPrice = Math.round(p.yt[ytOpt] * discountFactor);
 
+            const webStartPrice = Math.round(p.web.weekly * discountFactor);
             const fbStartPrice = Math.round(p.fb.weekly * discountFactor);
             const liStartPrice = Math.round(p.li.weekly * discountFactor);
             const ytStartPrice = Math.round(p.yt.weekly * discountFactor);
 
             // Calculate pre-configured bundle prices
-            const weeklyBundleMonthly = Math.round((p.web + p.fb.weekly + p.li.weekly + p.yt.weekly) * discountFactor);
-            const dailyBundleMonthly = Math.round((p.web + p.fb.daily + p.li.daily + p.yt.daily) * discountFactor);
+            const weeklyBundleMonthly = Math.round((p.web.weekly + p.fb.weekly + p.li.weekly + p.yt.weekly) * discountFactor);
+            const dailyBundleMonthly = Math.round((p.web.daily + p.fb.daily + p.li.daily + p.yt.daily) * discountFactor);
 
             const pkgWeeklyEl = document.getElementById('pkg-weekly-price');
             const pkgDailyEl = document.getElementById('pkg-daily-price');
@@ -1002,7 +1024,7 @@
             const startLi = document.getElementById('start-price-li');
             const startYt = document.getElementById('start-price-yt');
 
-            if (startWeb) startWeb.innerText = p.format(webPrice);
+            if (startWeb) startWeb.innerText = p.format(webStartPrice);
             if (startFb) startFb.innerText = p.format(fbStartPrice);
             if (startLi) startLi.innerText = p.format(liStartPrice);
             if (startYt) startYt.innerText = p.format(ytStartPrice);
@@ -1032,10 +1054,12 @@
             if (liCb) liCb.checked = true;
             if (ytCb) ytCb.checked = true;
 
+            const webRadios = document.querySelectorAll('input[name="opt-web"]');
             const fbRadios = document.querySelectorAll('input[name="opt-fb"]');
             const liRadios = document.querySelectorAll('input[name="opt-li"]');
             const ytRadios = document.querySelectorAll('input[name="opt-yt"]');
 
+            webRadios.forEach(r => r.checked = (r.value === tier));
             fbRadios.forEach(r => r.checked = (r.value === tier));
             liRadios.forEach(r => r.checked = (r.value === tier));
             ytRadios.forEach(r => r.checked = (r.value === tier));
@@ -1060,11 +1084,13 @@
             let itemsHtml = '';
 
             if (webCb && webCb.checked) {
-                const cost = Math.round(p.web * discountFactor);
+                const opt = document.querySelector('input[name="opt-web"]:checked')?.value || 'weekly';
+                const cost = Math.round(p.web[opt] * discountFactor);
                 monthlyTotal += cost;
+                const label = opt === 'daily' ? 'Daily Updates' : 'Weekly Updates';
                 itemsHtml += `
                     <div class="flex justify-between items-center text-xs border-b border-slate-800/60 pb-2">
-                        <span class="text-slate-300">• Website Maintenance</span>
+                        <span class="text-slate-300">• Website Maintenance (${label})</span>
                         <span class="font-bold text-cyan-400">${p.format(cost)}/mo</span>
                     </div>`;
             }
@@ -1147,8 +1173,9 @@
             let total = 0;
 
             if (webCb && webCb.checked) {
-                const cost = Math.round(p.web * discountFactor);
-                items.push('• Website Maintenance & Security: ' + p.format(cost) + '/mo');
+                const opt = document.querySelector('input[name="opt-web"]:checked')?.value || 'weekly';
+                const cost = Math.round(p.web[opt] * discountFactor);
+                items.push(`• Website Maintenance & Security (${opt} backups): ` + p.format(cost) + '/mo');
                 total += cost;
             }
 
